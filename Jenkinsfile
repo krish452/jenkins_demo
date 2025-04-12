@@ -53,6 +53,12 @@ pipeline {
 
         stage('Deploy to Production') {
             agent { label 'production' }
+            when {
+                branch 'main' // Ensure this step runs only on the main branch
+                expression { 
+                    return currentBuild.previousBuild.result == 'SUCCESS' // Run only if Staging deploy is successful
+                }
+            }
             steps {
                 script {
                     // Deploy Docker containers to Production environment
