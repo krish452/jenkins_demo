@@ -56,6 +56,7 @@ pipeline {
             steps {
                 script {
                     // Deploy Docker containers to Production environment
+                    bat "docker rm -f flask_app_production || true"
                     bat 'docker-compose -f docker-compose.yml up -d production'
                 }
             }
