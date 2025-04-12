@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Staging environment
+  staging:
+    container_name: flask_app_staging
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=staging
+    volumes:
+      - .:/app
+    networks:
+      - devops_network
+
+  # Production environment
+  production:
+    container_name: flask_app_production
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+    volumes:
+      - .:/app
+    networks:
+      - devops_network
+
+networks:
+  devops_network:
+    driver: bridge
