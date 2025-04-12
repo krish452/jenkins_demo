@@ -45,6 +45,7 @@ pipeline {
             steps {
                 script {
                     // Deploy Docker containers to Staging environment
+                    bat "docker rm -f flask_app_staging || true"
                     bat 'docker-compose -f docker-compose.yml up -d staging'
                 }
             }
