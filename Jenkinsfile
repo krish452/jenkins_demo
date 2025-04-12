@@ -24,8 +24,12 @@ pipeline {
             agent any
             steps {
                 script {
-                    // Build Docker images using docker-compose
-                    bat 'docker-compose -f docker-compose.yml build'
+                    try {
+                        // Build Docker images using docker-compose
+                        bat 'docker-compose -f docker-compose.yml build'
+                    } catch (Exception e) {
+                        error "Build failed: ${e.getMessage()}"
+                    }
                 }
             }
         }
@@ -34,8 +38,12 @@ pipeline {
             agent any
             steps {
                 script {
-                    // Run unit tests
-                    bat 'python -m unittest discover tests/'
+                    try {
+                        // Run unit tests
+                        bat 'python -m unittest discover tests/'
+                    } catch (Exception e) {
+                        error "Tests failed: ${e.getMessage()}"
+                    }
                 }
             }
         }
@@ -44,9 +52,13 @@ pipeline {
             agent { label 'staging' }
             steps {
                 script {
-                    // Deploy Docker containers to Staging environment
-                    bat "docker rm -f flask_app_staging || true"
-                    bat 'docker-compose -f docker-compose.yml up -d staging'
+                    try {
+                        // Deploy Docker containers to Staging environment
+                        bat "docker rm -f flask_app_staging || true"
+                        bat 'docker-compose -f docker-compose.yml up -d staging'
+                    } catch (Exception e) {
+                        error "Staging deployment failed: ${e.getMessage()}"
+                    }
                 }
             }
         }
@@ -61,9 +73,29 @@ pipeline {
             }
             steps {
                 script {
-                    // Deploy Docker containers to Production environment
-                    bat "docker rm -f flask_app_production || true"
-                    bat 'docker-compose -f docker-compose.yml up -d production'
+                    try {
+                        // Deploy Docker containers to Production environment
+                        bat "docker rm -f flask_app_production || true"
+                        bat 'docker-compose -f docker-compose.yml up -d production'
+                    } catch (Exception e) {
+                        error "Production deployment failed: ${e.getMessage()}"
+                    }
+                }
+            }
+        }
+
+        // Handle pull requests from feature branches
+        stage('Handle Pull Requests') {
+            when {
+                branch 'feature/*'
+            }
+            steps {
+                script {
+                    echo 'Handling pull request...'
+                    // Add any integration steps here, e.g., merging changes
+                    bat 'git fetch origin'
+                    bat 'git checkout main'
+                    bat 'git merge origin/feature/*'
                 }
             }
         }
