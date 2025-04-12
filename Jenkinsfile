@@ -7,8 +7,8 @@ pipeline {
         stage('Verify Docker Setup - Staging') {
             agent { label 'staging' }
             steps {
-                sh 'docker -v'
-                sh 'docker-compose -v'
+                bat 'docker -v'
+                bat 'docker-compose -v'
             }
         }
 
