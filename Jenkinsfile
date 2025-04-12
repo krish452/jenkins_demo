@@ -62,13 +62,19 @@ pipeline {
     }
     post {
         always {
-            cleanWs()
+            node {
+                cleanWs()
+            }
         }
         success {
-            echo 'Pipeline executed successfully!'
+            node{
+                echo 'Pipeline executed successfully!'
+            }
         }
         failure {
-            echo 'Pipeline execution failed!'
+            node{
+                echo 'Pipeline execution failed!'
+            }
         }
     }
 }
