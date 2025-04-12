@@ -15,8 +15,8 @@ pipeline {
         stage('Verify Docker Setup - Production') {
             agent { label 'production' }
             steps {
-                sh 'docker -v'
-                sh 'docker-compose -v'
+                bat 'docker -v'
+                bat 'docker-compose -v'
             }
         }
 
@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker images using docker-compose
-                    sh 'docker-compose -f docker-compose.yml build'
+                    bat 'docker-compose -f docker-compose.yml build'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     // Run unit tests
-                    sh 'python -m unittest discover tests/'
+                    bat 'python -m unittest discover tests/'
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     // Deploy Docker containers to Staging environment
-                    sh 'docker-compose -f docker-compose.yml up -d staging'
+                    bat 'docker-compose -f docker-compose.yml up -d staging'
                 }
             }
         }
@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     // Deploy Docker containers to Production environment
-                    sh 'docker-compose -f docker-compose.yml up -d production'
+                    bat 'docker-compose -f docker-compose.yml up -d production'
                 }
             }
         }
