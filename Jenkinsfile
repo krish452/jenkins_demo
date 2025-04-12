@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
     environment {
         APP_NAME = 'flask-app'
     }
@@ -62,17 +62,17 @@ pipeline {
     }
     post {
         always {
-            node('any') {
+            node('') {
                 cleanWs()
             }
         }
         success {
-            node('any') {
+            node('') {
                 echo 'Pipeline executed successfully!'
             }
         }
         failure {
-            node('any') {
+            node('') {
                 echo 'Pipeline execution failed!'
             }
         }
