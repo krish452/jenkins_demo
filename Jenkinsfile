@@ -66,13 +66,13 @@ pipeline {
                 cleanWs()
             }
         }
-        success ('any') {
-            node{
+        success {
+            node('any') {
                 echo 'Pipeline executed successfully!'
             }
         }
-        failure ('any') {
-            node{
+        failure {
+            node('any') {
                 echo 'Pipeline execution failed!'
             }
         }
