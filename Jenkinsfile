@@ -4,6 +4,22 @@ pipeline {
         APP_NAME = 'flask-app'
     }
     stages {
+        stage('Verify Docker Setup - Staging') {
+            agent { label 'staging' }
+            steps {
+                sh 'docker -v'
+                sh 'docker-compose -v'
+            }
+        }
+
+        stage('Verify Docker Setup - Production') {
+            agent { label 'production' }
+            steps {
+                sh 'docker -v'
+                sh 'docker-compose -v'
+            }
+        }
+
         stage('Build') {
             agent any
             steps {
@@ -13,6 +29,7 @@ pipeline {
                 }
             }
         }
+
         stage('Test') {
             agent any
             steps {
@@ -22,20 +39,22 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy to Staging') {
             agent { label 'staging' }
             steps {
                 script {
-                    // Deploy Docker containers using docker-compose to Staging environment
+                    // Deploy Docker containers to Staging environment
                     sh 'docker-compose -f docker-compose.yml up -d staging'
                 }
             }
         }
+
         stage('Deploy to Production') {
             agent { label 'production' }
             steps {
                 script {
-                    // Deploy Docker containers using docker-compose to Production environment
+                    // Deploy Docker containers to Production environment
                     sh 'docker-compose -f docker-compose.yml up -d production'
                 }
             }
